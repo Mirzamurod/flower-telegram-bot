@@ -1,12 +1,14 @@
 import axios from 'axios'
 // import i18n from '@/languages/i18n'
-import { deleteUser } from './user/login'
+import { getSession } from 'next-auth/react'
+import { encode } from 'js-base64'
+import { generateToken } from '@/lib/generate-token'
 import { TFlower } from '@/types/middleware'
 
 const middleware =
   ({ dispatch }: { dispatch: any }) =>
   (next: any) =>
-  (action: { type: string; payload: TFlower }) => {
+  async (action: { type: string; payload: TFlower }) => {
     if (action.type !== 'flower') {
       next(action)
       return
@@ -16,18 +18,16 @@ const middleware =
 
     const { url, method, params, data, onStart, onSuccess, onFail } = action.payload
 
-    const token = localStorage.getItem('flower')
+    const session = await getSession()
+    const token = await generateToken(session?.currentUser?._id)
 
-    const headers = token ? { Authorization: `Bearer ${token}` } : null
+    const headers = token ? { Authorization: `Bearer ${encode(token)}` } : null
 
     dispatch({ type: onStart })
 
     // @ts-ignore
     axios({
-      baseURL:
-        window?.location?.hostname === 'localhost'
-          ? 'http://localhost:5000/api/'
-          : 'http://206.189.109.20:9090/api/',
+      baseURL: 'http://localhost:5000/api/',
       method,
       data,
       url,
@@ -49,8 +49,8 @@ const middleware =
         } else dispatch({ type: onFail, payload: res })
       })
       .catch(error => {
-        if (error?.response?.statusCode === 401) dispatch(deleteUser())
-        else {
+        if (error?.response?.statusCode === 401) {
+        } else {
           const data = error?.response?.data
           if (data?.message) {
             // toast({

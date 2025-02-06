@@ -9,6 +9,7 @@ const initialState: IUserStore = {
   token: false,
   errors: null,
   success: false,
+  sidebar: true,
 }
 
 const login = createSlice({
@@ -44,9 +45,9 @@ const login = createSlice({
     getUserData: (state, { payload }) => {
       state.user = payload
     },
-    deleteUser: () => {
-      localStorage.removeItem('flower')
-      window.location.reload()
+    showSidebar: (state, { payload }) => {
+      console.log(payload)
+      state.sidebar = payload
     },
   },
 })
@@ -90,6 +91,6 @@ export const userDelete = (data: any) =>
     onFail: login.actions.onFail.type,
   })
 
-export const { getUserData, deleteUser } = login.actions
+export const { getUserData, showSidebar } = login.actions
 
 export default login.reducer

@@ -15,6 +15,7 @@ export interface IUserStore {
   errors: TError[] | null
   token: boolean
   success: boolean
+  sidebar: boolean
 }
 
 export interface IRegister {

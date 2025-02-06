@@ -1,10 +1,5 @@
-import { ModeToggle } from '@/components/shared/mode-toggle'
+import AuthGuard from '@/components/auth/AuthGuard'
 
 export default function Home() {
-  return (
-    <main>
-      hello world
-      <ModeToggle />
-    </main>
-  )
+  return <AuthGuard>Dashboard</AuthGuard>
 }

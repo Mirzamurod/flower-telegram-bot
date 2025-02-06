@@ -1,27 +1,24 @@
-// React Imports
-import { Fragment, ReactElement, ReactNode, useEffect } from 'react'
+'use client'
 
-// Next Import
+import { FC, ReactNode } from 'react'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-// Hooks Import
-import { useSelector } from 'react-redux'
-import { RootState } from '@/store'
-
-interface AuthGuardProps {
+interface IProps {
   children: ReactNode
-  fallback: ReactElement | null
 }
 
-const AuthGuard = (props: AuthGuardProps) => {
-  const { children, fallback } = props
+const AuthGuard: FC<IProps> = ({ children }) => {
+  const { data: session, status } = useSession()
   const router = useRouter()
 
-  const { user } = useSelector((state: RootState) => state.login)
+  if (status === 'loading') return <p>Loading...</p>
+  if (!session) {
+    router.push('/login')
+    return null
+  }
 
-  if (user && user.block) router.replace('/payment')
-
-  return <Fragment>{children}</Fragment>
+  return <>{children}</>
 }
 
 export default AuthGuard

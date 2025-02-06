@@ -1,32 +1,22 @@
 import mongoose from 'mongoose'
 
-const MONGO_URI = process.env.MONGO_URI
+let isConnected: boolean = false
 
-if (!MONGO_URI) {
-  throw new Error('Please define the MONGO_URI environment variable inside .env.local')
-}
-
-// @ts-ignore
-let cached = global?.mongoose
-
-if (!cached) {
-  // @ts-ignore
-  cached = global?.mongoose = { conn: null, promise: null }
-}
 export const connectToDatabase = async () => {
-  if (cached.conn) {
-    return cached.conn
+  mongoose.set('strictQuery', true)
+
+  if (!process.env.MONGO_URI) {
+    return console.error('MONGO_URI is not defined')
   }
 
-  if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    }
-
-    cached.promise = mongoose.connect(MONGO_URI, opts).then(mongoose => {
-      return mongoose
-    })
+  if (isConnected) {
+    return
   }
-  cached.conn = await cached.promise
-  return cached.conn
+
+  try {
+    await mongoose.connect(process.env.MONGO_URI, { autoCreate: true })
+    isConnected = true
+  } catch (error) {
+    console.log('Error connecting to databse')
+  }
 }

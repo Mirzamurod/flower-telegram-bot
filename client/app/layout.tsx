@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/theme.provider'
+import SessionProvider from '@/components/providers/session.provider'
 import './globals.css'
+import LayoutProvider from '@/components/providers/layout.provider'
 
 const spaceGrotesk = Space_Grotesk({
   weight: ['300', '400', '500', '600', '700'],
@@ -21,17 +23,19 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang='en' suppressHydrationWarning>
-      <body className={`${spaceGrotesk.variable} antialiased`} suppressHydrationWarning>
-        <ThemeProvider
-          attribute='class'
-          defaultTheme='system'
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
-      </body>
-    </html>
+    <SessionProvider>
+      <html lang='en' suppressHydrationWarning>
+        <body className={`${spaceGrotesk.variable} antialiased`} suppressHydrationWarning>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            <LayoutProvider>{children}</LayoutProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </SessionProvider>
   )
 }

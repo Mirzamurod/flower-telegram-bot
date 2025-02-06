@@ -1,9 +1,9 @@
 import { DefaultSession } from 'next-auth'
-import { IUser } from '.'
+import { TUser } from './user'
 
 declare module 'next-auth' {
   interface Session {
-    currentUser?: IUser
+    currentUser?: TUser
     user: {} & DefaultSession['user']
   }
 }

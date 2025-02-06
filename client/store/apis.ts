@@ -10,3 +10,7 @@ export const userprofile = 'users'
 export const userupdate = 'users/update'
 export const userdelete = 'users/delete'
 export const getUsersApi = 'users'
+
+// bouquet
+export const bouquets = '/bouquets'
+export const bouquetapi = '/bouquets/'

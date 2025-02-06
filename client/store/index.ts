@@ -1,12 +1,9 @@
-// Toolkit Imports
 import { useDispatch, useSelector } from 'react-redux'
 import { configureStore } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook } from 'react-redux'
 
-// Middleware
 import middleware from './middleware'
 
-// Reducers
 import login from './user/login'
 import register from './user/register'
 
@@ -15,8 +12,7 @@ export const store = configureStore({
     login,
     register,
   },
-  // @ts-ignore
-  middleware: () => [middleware],
+  middleware: () => [middleware] as any,
 })
 
 export type AppDispatch = typeof store.dispatch
