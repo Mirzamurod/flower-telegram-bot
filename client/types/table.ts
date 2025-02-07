@@ -1,4 +1,5 @@
-import { ReactNode, forwardRef } from 'react'
+import { ReactNode, StyleHTMLAttributes } from 'react'
+import { ClassValue } from 'clsx'
 
 export type TTable = {
   data: any[]
@@ -18,6 +19,7 @@ export type TColumns = {
   headerName: string
   sortable?: boolean
   renderCell?: ({ row }: { row: any; [x: string]: any }) => ReactNode
+  className?: string
 }
 
 export type TSortModel = { field: string; sort: 'asc' | 'desc' }

@@ -8,6 +8,7 @@ const initialState: IBouquetStore = {
   bouquet: null,
   errors: null,
   success: false,
+  pageCount: 0,
 }
 
 const bouquet = createSlice({
@@ -20,8 +21,8 @@ const bouquet = createSlice({
     },
     onSuccessBetBouquets: (state, { payload }) => {
       state.isLoading = false
-      console.log(payload)
-      state.bouquets = payload
+      state.bouquets = payload.data
+      state.pageCount = payload.pageLists
     },
     onFailBetBouquets: state => {
       state.isLoading = false

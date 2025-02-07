@@ -1,7 +1,6 @@
 'use client'
 
 import { FC, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { useDispatch } from 'react-redux'
 import Table from '@/components/table'
 import { TSortModel } from '@/types/table'
@@ -11,31 +10,56 @@ import { Button } from '@/components/ui/button'
 import TableHeader from '../_components/list/TableHeader'
 import columns from '../_components/list/columns'
 import { getBouquets } from '@/store/bouquet'
+import { useAppSelector } from '@/store'
 
 const BouquetsList: FC<TChild> = props => {
-  const { searchParams } = props
+  const {} = props
   const dispatch = useDispatch()
-  const router = useRouter()
-  const params = new URLSearchParams()
   const [ordering, setOrdering] = useState<TSortModel | null>(null)
   const [search, setSearch] = useState<string>('')
-  const [inputValue, setInputValue] = useState<string>('')
+  const [page, setPage] = useState(1)
+  const [limit, setLimit] = useState('10')
+
+  const { isLoading, bouquets, pageCount, success } = useAppSelector(state => state.bouquet)
+
+  const getData = () =>
+    dispatch(
+      getBouquets({
+        search,
+        page,
+        pageCount: limit,
+        sortName: ordering?.field,
+        sortValue: ordering?.sort,
+      })
+    )
 
   useEffect(() => {
-    dispatch(getBouquets())
-  }, [])
+    getData()
+  }, [search, page, limit, ordering?.field, ordering?.sort])
 
-  const onChange = (item: { [value: string]: string | string[] | number }) => {}
+  useEffect(() => {
+    getData()
+  }, [success])
+
+  const onChange = (item: { page: number; limit: string }) => {
+    setPage(item.page)
+    setLimit(item.limit)
+  }
 
   return (
     <div>
-      <TableHeader search={search} setSearch={setSearch} />
+      <TableHeader setSearch={setSearch} />
       <Table
-        data={[]}
+        data={bouquets}
         columns={columns}
+        loading={isLoading}
+        pageCount={pageCount}
+        sortModel={ordering}
+        paginationModel={{ page, pageSize: limit }}
         onPaginationModelChange={newItem =>
           onChange({ page: newItem.page, limit: newItem.pageSize })
         }
+        onSortModelChange={sort => setOrdering(sort)}
       />
       <Button onClick={() => signOut()}>Logout</Button>
     </div>

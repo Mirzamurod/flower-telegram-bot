@@ -1,6 +1,7 @@
 'use client'
 
 import { createElement, FC } from 'react'
+import ReactPaginate from 'react-paginate'
 import {
   TableBody,
   TableCell,
@@ -12,6 +13,7 @@ import {
 import { TColumns, TTable } from '@/types/table'
 import { Loader2 } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select'
+import { cn } from '@/lib/utils'
 
 const Table: FC<TTable> = props => {
   const {
@@ -26,51 +28,6 @@ const Table: FC<TTable> = props => {
     onPaginationModelChange,
     pageSizeOptions = ['10', '20', '50'],
   } = props
-
-  const invoices = [
-    {
-      invoice: 'INV001',
-      paymentStatus: 'Paid',
-      totalAmount: '$250.00',
-      paymentMethod: 'Credit Card',
-    },
-    {
-      invoice: 'INV002',
-      paymentStatus: 'Pending',
-      totalAmount: '$150.00',
-      paymentMethod: 'PayPal',
-    },
-    {
-      invoice: 'INV003',
-      paymentStatus: 'Unpaid',
-      totalAmount: '$350.00',
-      paymentMethod: 'Bank Transfer',
-    },
-    {
-      invoice: 'INV004',
-      paymentStatus: 'Paid',
-      totalAmount: '$450.00',
-      paymentMethod: 'Credit Card',
-    },
-    {
-      invoice: 'INV005',
-      paymentStatus: 'Paid',
-      totalAmount: '$550.00',
-      paymentMethod: 'PayPal',
-    },
-    {
-      invoice: 'INV006',
-      paymentStatus: 'Pending',
-      totalAmount: '$200.00',
-      paymentMethod: 'Bank Transfer',
-    },
-    {
-      invoice: 'INV007',
-      paymentStatus: 'Unpaid',
-      totalAmount: '$300.00',
-      paymentMethod: 'Credit Card',
-    },
-  ]
 
   const changeSortable = (column: TColumns) => {
     if (column.sortable) !column.renderCell && changeSort(column.field)
@@ -92,7 +49,12 @@ const Table: FC<TTable> = props => {
         <TableHeader>
           <TableRow>
             {columns.map(column => (
-              <TableHead {...column} key={column.field} onClick={() => changeSortable(column)}>
+              <TableHead
+                {...column}
+                key={column.field}
+                className={cn(column.className)}
+                onClick={() => changeSortable(column)}
+              >
                 {column.headerName}
               </TableHead>
             ))}
@@ -104,7 +66,7 @@ const Table: FC<TTable> = props => {
               <TableCell colSpan={columns.length}>
                 {loading ? (
                   <div className='flex justify-center items-center'>
-                    <Loader2 />
+                    <Loader2 className='animate-spin' />
                   </div>
                 ) : (
                   <p>no data</p>
@@ -115,7 +77,7 @@ const Table: FC<TTable> = props => {
             data.map(item => (
               <TableRow key={item._id}>
                 {columns.map((column, index) => (
-                  <TableCell {...column} key={index}>
+                  <TableCell {...column} key={index} className={cn(column.className)}>
                     {column.renderCell
                       ? createElement(column.renderCell as any, { row: item })
                       : item[column.field]}
@@ -127,7 +89,7 @@ const Table: FC<TTable> = props => {
         </TableBody>
       </ShadTable>
       {footerPagination && !loading ? (
-        <div className='mt-2 items-center justify-center'>
+        <div className='mt-2 gap-3 flex justify-end items-center'>
           <Select
             value={paginationModel?.pageSize ?? '10'}
             onValueChange={value => onPaginationModelChange!({ page: 1, pageSize: value })}
@@ -143,6 +105,30 @@ const Table: FC<TTable> = props => {
               ))}
             </SelectContent>
           </Select>
+          <div className='w-auto'>
+            <ReactPaginate
+              previousLabel='<'
+              nextLabel='>'
+              breakLabel='...'
+              pageCount={pageCount! ?? 1}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={({ selected }) =>
+                onPaginationModelChange!({
+                  page: selected! + 1,
+                  pageSize: paginationModel?.pageSize!,
+                })
+              }
+              containerClassName='flex gap-2 justify-center'
+              pageClassName='px-3 py-[7px] text-sm font-medium rounded-md border border-green-500'
+              activeClassName='bg-green-500 text-white'
+              previousClassName='px-3 py-[7px] text-sm font-medium rounded-md border border-green-500'
+              nextClassName='px-3 py-[7px] text-sm font-medium rounded-md border border-green-500'
+              breakClassName='px-3 py-[7px] text-sm font-medium rounded-md border border-green-500 text-gray-500'
+              disabledClassName='opacity-50 cursor-not-allowed'
+              renderOnZeroPageCount={null}
+            />
+          </div>
         </div>
       ) : null}
     </div>
