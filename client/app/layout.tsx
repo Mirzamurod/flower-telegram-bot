@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import { Space_Grotesk } from 'next/font/google'
 import { ThemeProvider } from '@/components/providers/theme.provider'
 import SessionProvider from '@/components/providers/session.provider'
-import './globals.css'
 import LayoutProvider from '@/components/providers/layout.provider'
+import './globals.css'
 
 const spaceGrotesk = Space_Grotesk({
   weight: ['300', '400', '500', '600', '700'],

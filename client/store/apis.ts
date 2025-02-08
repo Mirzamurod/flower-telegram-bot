@@ -14,3 +14,11 @@ export const getUsersApi = 'users'
 // bouquet
 export const bouquets = '/bouquets'
 export const bouquetapi = '/bouquets/'
+
+// flower
+export const flowersapi = '/flowers'
+export const flowerapi = '/flowers/'
+
+// order
+export const ordersapi = '/orders'
+export const orderapi = '/orders/'

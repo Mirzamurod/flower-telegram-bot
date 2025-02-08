@@ -1,16 +1,48 @@
+import { FC } from 'react'
+import Image from 'next/image'
+import { useParams } from 'next/navigation'
 import Input from '@/components/input'
 import { TInputType } from '@/types/input'
-import {} from 'react'
+import { UploadButton } from '@/lib/uploadthing'
+import { Upload } from 'lucide-react'
+import { Label } from '@/components/ui/label'
 
-const AddEditCard = () => {
-  const inputs: TInputType[] = [{ name: 'price' }, { name: 'name' }, { name: 'info' }]
+interface IProps {
+  image: string
+  setImage: (value: string) => void
+}
+
+const AddEditCard: FC<IProps> = props => {
+  const { image, setImage } = props
+  const { addEdit } = useParams()
+
+  const inputs: TInputType[] = [{ name: 'price', required: true }, { name: 'name' }]
 
   return (
     <div>
       <div className='grid grid-cols-3 gap-3'>
+        <div>
+          <Label>
+            Image <span className='text-red-500'>*</span>
+          </Label>
+          <UploadButton
+            endpoint='imageUploader'
+            onClientUploadComplete={res => setImage(res[0].url)}
+            config={{ appendOnPaste: true, mode: 'auto' }}
+            content={{ button: <Upload /> }}
+          />
+        </div>
+        {addEdit !== 'add' && image ? (
+          <Image src={image} alt='bouquet image' width={200} height={200} />
+        ) : null}
+      </div>
+      <div className='grid grid-cols-3 gap-3 mt-3'>
         {inputs.map(input => (
-          <Input {...input} />
+          <Input {...input} key={input.name} />
         ))}
+      </div>
+      <div className='grid grid-cols-3 gap-3 mt-3'>
+        <Input name='info' textarea />
       </div>
     </div>
   )

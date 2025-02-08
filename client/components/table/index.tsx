@@ -69,7 +69,7 @@ const Table: FC<TTable> = props => {
                     <Loader2 className='animate-spin' />
                   </div>
                 ) : (
-                  <p>no data</p>
+                  <p className='text-center'>no data</p>
                 )}
               </TableCell>
             </TableRow>

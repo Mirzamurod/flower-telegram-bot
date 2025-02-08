@@ -5,8 +5,6 @@ import { useDispatch } from 'react-redux'
 import Table from '@/components/table'
 import { TSortModel } from '@/types/table'
 import { TChild } from '@/types/child'
-import { signOut } from 'next-auth/react'
-import { Button } from '@/components/ui/button'
 import TableHeader from '../_components/list/TableHeader'
 import columns from '../_components/list/columns'
 import { getBouquets } from '@/store/bouquet'
@@ -38,7 +36,7 @@ const BouquetsList: FC<TChild> = props => {
   }, [search, page, limit, ordering?.field, ordering?.sort])
 
   useEffect(() => {
-    getData()
+    if (success) getData()
   }, [success])
 
   const onChange = (item: { page: number; limit: string }) => {
@@ -61,7 +59,6 @@ const BouquetsList: FC<TChild> = props => {
         }
         onSortModelChange={sort => setOrdering(sort)}
       />
-      <Button onClick={() => signOut()}>Logout</Button>
     </div>
   )
 }

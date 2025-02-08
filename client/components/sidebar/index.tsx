@@ -1,6 +1,6 @@
-import {} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { ChevronUp, User2 } from 'lucide-react'
 import {
   SidebarContent,
@@ -25,6 +25,8 @@ import {
 import { sidebar } from '@/lib/constants'
 
 const Sidebar = () => {
+  const pathname = usePathname()
+
   return (
     <ShadSidebar className='bg-background'>
       <SidebarHeader>
@@ -40,7 +42,7 @@ const Sidebar = () => {
               {sidebar.map(item => (
                 <SidebarMenuItem key={item.title}>
                   {item.href ? (
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === item.href}>
                       <Link href={{ pathname: item.href, query: item.query }}>
                         <item.icon size={16} />
                         <span>{item.title}</span>
@@ -56,7 +58,7 @@ const Sidebar = () => {
                     ? item.children.map(child => (
                         <SidebarMenuSub key={child.title}>
                           <SidebarMenuSubItem>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton asChild isActive={pathname === child.href}>
                               <Link href={{ pathname: child.href, query: child.query }}>
                                 <child.icon size={16} />
                                 <span>{child.title}</span>
