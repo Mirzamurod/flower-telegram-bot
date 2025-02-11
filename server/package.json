@@ -23,6 +23,7 @@
     "express-validator": "^7.2.1",
     "js-base64": "^3.7.7",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.10.0"
+    "mongoose": "^8.10.0",
+    "node-telegram-bot-api": "^0.66.0"
   }
 }

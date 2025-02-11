@@ -6,6 +6,7 @@ const bouquetSchema = new Schema(
     price: { type: String, require: true },
     name: { type: String },
     info: { type: String },
+    block: { type: Boolean, default: false },
     userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   { timestamps: true }

@@ -1,6 +1,7 @@
 import { FC } from 'react'
 import Image from 'next/image'
 import { useParams } from 'next/navigation'
+import { toast } from 'react-toastify'
 import Input from '@/components/input'
 import { TInputType } from '@/types/input'
 import { UploadButton } from '@/lib/uploadthing'
@@ -33,6 +34,8 @@ const AddEditCard: FC<IProps> = props => {
             onClientUploadComplete={res => setImage(res[0].url)}
             config={{ appendOnPaste: true, mode: 'auto' }}
             content={{ button: <Upload /> }}
+            // @ts-ignore
+            onUploadError={error => toast.error(error.message)}
           />
         </div>
         {addEdit !== 'add' && image ? (

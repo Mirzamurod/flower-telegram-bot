@@ -42,6 +42,25 @@ const user = {
       res.status(400).json({ message: error.message, success: false })
     }
   }),
+
+  /**
+   * @desc    Edit Client Telegram key
+   * @route   PATCH /api/client/telegram
+   * @access  Private
+   */
+  editTelegramKey: expressAsyncHandler(async (req, res) => {
+    try {
+      const userId = req.user._id
+      await User.findByIdAndUpdate(userId, {
+        telegramToken: req.body.telegramToken,
+        telegramId: req.body.telegramId,
+      })
+
+      res.status(200).json({ success: true, message: 'user_edited' })
+    } catch (error) {
+      res.status(400).json({ success: false, message: error.message })
+    }
+  }),
 }
 
 export default user

@@ -1,6 +1,7 @@
 import expressAsyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
 import Bouquet from './../models/bouquetModel.js'
+import { Types } from 'mongoose'
 
 const bouquet = {
   /**
@@ -18,6 +19,34 @@ const bouquet = {
 
       const bouquets = await Bouquet.find(filter)
         .sort({ ...(sortValue ? { [sortName]: sortValue } : sortName), updatedAt: -1 })
+        .limit(+limit)
+        .skip(+limit * (+page - 1))
+
+      res.status(200).json({
+        page,
+        data: bouquets,
+        pageLists: Math.ceil(totalCount / limit) || 1,
+        count: totalCount,
+      })
+    } catch (error) {
+      res.status(400).json({ message: error.message, success: false })
+    }
+  }),
+  /**
+   * @desc    Get Bouquets
+   * @route   GET /api/bouquets/public/:userId
+   * @access  Public
+   */
+  getPublicBouquets: expressAsyncHandler(async (req, res) => {
+    const { limit = 20, page = 1 } = req.query
+    const { userId } = req.params
+
+    const filter = { userId, block: false }
+
+    try {
+      const totalCount = await Bouquet.countDocuments(filter)
+
+      const bouquets = await Bouquet.find(filter)
         .limit(+limit)
         .skip(+limit * (+page - 1))
 

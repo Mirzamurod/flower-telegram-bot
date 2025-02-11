@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { bouquetapi, bouquets, flower } from '@/store/apis'
+import { bouquetapi, bouquetpublic, bouquets, flower } from '@/store/apis'
 import { IBouquetStore, TBouquetForm } from '@/types/bouquet'
 
 const initialState: IBouquetStore = {
@@ -57,6 +57,16 @@ const bouquet = createSlice({
 export const getBouquets = (params?: any) =>
   flower({
     url: bouquets,
+    method: 'get',
+    params,
+    onStart: bouquet.actions.onStartGetBouquets.type,
+    onSuccess: bouquet.actions.onSuccessGetBouquets.type,
+    onFail: bouquet.actions.onFailGetBouquets.type,
+  })
+
+export const getPublicBouquets = (id: string, params?: any) =>
+  flower({
+    url: bouquetpublic + id,
     method: 'get',
     params,
     onStart: bouquet.actions.onStartGetBouquets.type,

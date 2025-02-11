@@ -25,7 +25,11 @@ export const authOptions: NextAuthOptions = {
       await connectToDatabase()
       const isExistingUser = await User.findOne({ email: session.user?.email })
       if (!isExistingUser) {
-        const user = await User.create({ email: session.user?.email, image: session.user?.image })
+        const user = await User.create({
+          email: session.user?.email,
+          image: session.user?.image,
+          name: session.user.name,
+        })
         session.currentUser = user
         return session
       }

@@ -2,6 +2,7 @@ import axios from 'axios'
 // import i18n from '@/languages/i18n'
 import { getSession } from 'next-auth/react'
 import { encode } from 'js-base64'
+import { toast } from 'react-toastify'
 import { generateToken } from '@/lib/generate-token'
 import { TFlower } from '@/types/middleware'
 
@@ -37,30 +38,14 @@ const middleware =
       .then(res => {
         if (res.status === 200 || res.status === 201) {
           dispatch({ type: onSuccess, payload: res.data })
-          if (res.data.message) {
-            // toast({
-            //   status: 'success',
-            //   position: 'top-right',
-            //   isClosable: true,
-            //   variant: 'left-accent',
-            //   title: i18n?.t(res.data?.message),
-            // })
-          }
+          if (res.data.message) toast.success(res.data?.message)
         } else dispatch({ type: onFail, payload: res })
       })
       .catch(error => {
         if (error?.response?.statusCode === 401) {
         } else {
           const data = error?.response?.data
-          if (data?.message) {
-            // toast({
-            //   status: 'warning',
-            //   position: 'top-right',
-            //   isClosable: true,
-            //   variant: 'left-accent',
-            //   title: i18n?.t(data?.message),
-            // })
-          }
+          if (data?.message) toast.error(data?.message)
           dispatch({ type: onFail, payload: error?.response?.data })
         }
       })

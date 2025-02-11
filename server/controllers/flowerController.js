@@ -31,6 +31,34 @@ const flower = {
       res.status(400).json({ message: error.message, success: false })
     }
   }),
+  /**
+   * @desc    Get Flowers
+   * @route   GET /api/flowers/public/:id
+   * @access  Public
+   */
+  getPublicFlowers: expressAsyncHandler(async (req, res) => {
+    const { limit = 20, page = 1 } = req.query
+    const { userId } = req.params
+
+    const filter = { userId, block: false }
+
+    try {
+      const totalCount = await Flower.countDocuments(filter)
+
+      const flowers = await Flower.find(filter)
+        .limit(+limit)
+        .skip(+limit * (+page - 1))
+
+      res.status(200).json({
+        page,
+        data: flowers,
+        pageLists: Math.ceil(totalCount / limit) || 1,
+        count: totalCount,
+      })
+    } catch (error) {
+      res.status(400).json({ message: error.message, success: false })
+    }
+  }),
 
   /**
    * @desc    Add Flower

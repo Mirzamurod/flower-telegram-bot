@@ -7,6 +7,8 @@ const userSchema = new Schema(
     image: { type: String },
     role: { type: String, enum: ['admin', 'client'], default: 'admin' },
     block: { type: Boolean, default: true },
+    telegramToken: { type: String },
+    telegramId: { type: String },
   },
   { timestamps: true }
 )

@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { encode } from 'js-base64'
-import { flower, loginUser, userdelete, userprofile, userupdate } from '@/store/apis'
+import {
+  editclienttelegram,
+  flower,
+  loginUser,
+  userdelete,
+  userprofile,
+  userupdate,
+} from '@/store/apis'
 import { IUserStore } from '@/types/user'
 
 const initialState: IUserStore = {
@@ -10,6 +17,7 @@ const initialState: IUserStore = {
   errors: null,
   success: false,
   sidebar: true,
+  telegramLoading: false,
 }
 
 const login = createSlice({
@@ -42,11 +50,19 @@ const login = createSlice({
       state.errors = payload?.messages
       state.success = payload?.success
     },
+    onStartEditTelegram: state => {
+      state.telegramLoading = true
+    },
+    onSuccessEditTelegram: state => {
+      state.telegramLoading = false
+    },
+    onFailEditTelegram: state => {
+      state.telegramLoading = false
+    },
     getUserData: (state, { payload }) => {
       state.user = payload
     },
     showSidebar: (state, { payload }) => {
-      console.log(payload)
       state.sidebar = payload
     },
   },
@@ -79,6 +95,16 @@ export const userUpdate = (data: any) =>
     onStart: login.actions.onStart.type,
     onSuccess: login.actions.userUpdate.type,
     onFail: login.actions.onFail.type,
+  })
+
+export const editClientTelegram = (data: { telegramToken: string; telegramId?: string }) =>
+  flower({
+    url: editclienttelegram,
+    method: 'patch',
+    data,
+    onStart: login.actions.onStartEditTelegram.type,
+    onSuccess: login.actions.onSuccessEditTelegram.type,
+    onFail: login.actions.onFailEditTelegram.type,
   })
 
 export const userDelete = (data: any) =>

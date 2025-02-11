@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import connectDB from './config/db.js'
 import { bouquetRoutes, orderRoutes, flowerRoutes, userRoutes } from './routes/index.js'
+import { restoreBots } from './telegramBot.js'
 
 const app = express()
 dotenv.config()
@@ -27,6 +28,9 @@ app.use('/api/flowers', flowerRoutes)
 
 const port = process.env.PORT || 5000
 
-app.listen(port, () => console.log(`Server ishga tushdi, Port ${port}`.yellow.bold))
+app.listen(port, async () => {
+  console.log(`Server ishga tushdi, Port ${port}`.yellow.bold)
+  await restoreBots()
+})
 
 export default app

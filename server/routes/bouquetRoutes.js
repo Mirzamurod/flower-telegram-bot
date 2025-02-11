@@ -14,5 +14,6 @@ router
   .get(protect, client, bouquet.getBouquet)
   .patch(protect, client, bouquetAddField, bouquet.editBouquet)
   .delete(protect, client, bouquet.deleteBouquet)
+router.get('/public/:userId', bouquet.getPublicBouquets)
 
 export default router

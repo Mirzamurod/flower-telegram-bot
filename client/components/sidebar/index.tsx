@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { ChevronUp, User2 } from 'lucide-react'
 import {
   SidebarContent,
@@ -23,6 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { sidebar } from '@/lib/constants'
+import { Separator } from '../ui/separator'
 
 const Sidebar = () => {
   const pathname = usePathname()
@@ -31,10 +33,11 @@ const Sidebar = () => {
     <ShadSidebar className='bg-background'>
       <SidebarHeader>
         <div className='flex gap-2 items-center'>
-          <Image src='/flower-icon.webp' alt='flower-icon' width={40} height={40} />
+          <Image src='/flower-icon.webp' alt='flower-icon' width={36} height={36} />
           <p className='text-xl'>Flowers</p>
         </div>
       </SidebarHeader>
+      <Separator />
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -85,10 +88,10 @@ const Sidebar = () => {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent side='top' className='w-[--radix-popper-anchor-width]'>
-                <DropdownMenuItem>
-                  <span>Account</span>
+                <DropdownMenuItem asChild className='cursor-pointer'>
+                  <Link href='/profile'>Account</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => signOut()} className='cursor-pointer'>
                   <span>Sign out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>

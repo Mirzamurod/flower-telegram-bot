@@ -7,6 +7,8 @@ export type TUser = {
   name?: string
   role: TUserRole
   block: boolean
+  telegramToken?: string
+  telegramId?: string
 }
 
 export interface IUserStore {
@@ -16,6 +18,7 @@ export interface IUserStore {
   token: boolean
   success: boolean
   sidebar: boolean
+  telegramLoading: boolean
 }
 
 export interface IRegister {
