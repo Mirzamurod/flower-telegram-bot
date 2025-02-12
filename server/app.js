@@ -31,6 +31,9 @@ const port = process.env.PORT || 5000
 app.listen(port, async () => {
   console.log(`Server ishga tushdi, Port ${port}`.yellow.bold)
   await restoreBots()
+
+  // 📌 Har 10 soniyada tokenlarni qayta yuklash
+  setInterval(restoreBots, 10000)
 })
 
 export default app

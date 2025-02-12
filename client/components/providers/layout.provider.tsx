@@ -6,6 +6,7 @@ import { SidebarProvider, SidebarTrigger } from '../ui/sidebar'
 import Sidebar from '../sidebar'
 import { ModeToggle } from '../shared/mode-toggle'
 import { Button } from '../ui/button'
+import { cn } from '@/lib/utils'
 
 interface IProps {
   children: ReactNode
@@ -31,7 +32,7 @@ const LayoutProvider: FC<IProps> = props => {
             </div>
           </div>
         ) : null}
-        <div className='p-2'>{children}</div>
+        <div className={cn(sidebar ? 'p-2' : null)}>{children}</div>
       </main>
     </SidebarProvider>
   )

@@ -2,7 +2,6 @@ import TelegramBot from 'node-telegram-bot-api'
 import User from './models/userModel.js'
 
 const bots = {} // Xotirada botlarni saqlash
-console.log(bots)
 
 // ✅ Bot yaratish va saqlash
 const createBot = async telegramToken => {
@@ -29,7 +28,6 @@ const createBot = async telegramToken => {
     }
 
     if (msg.contact) {
-      console.log('📞 Foydalanuvchining kontakti:', msg.contact)
       await bot.sendMessage(
         msg.chat.id,
         `✅ Raqamingiz qabul qilindi: ${msg.contact.phone_number}. Buketlarni ko'rish knopkasini bosib buketlarni ko'rishingiz mumkin`,
@@ -62,6 +60,15 @@ const createBot = async telegramToken => {
 // 🔄 **Server qayta ishga tushganda barcha botlarni tiklash**
 export const restoreBots = async () => {
   const tokens = await User.find({ role: 'client', telegramToken: { $exists: true } })
-  // console.log(tokens)
-  tokens.forEach(botData => createBot(botData.telegramToken))
+  tokens.forEach(({ telegramToken }) => {
+    if (!bots[telegramToken]) createBot(telegramToken)
+  })
+
+  Object.keys(bots).forEach(telegramToken => {
+    if (!tokens.find(t => t.telegramToken === telegramToken)) {
+      bots[telegramToken].stopPolling()
+      delete bots[telegramToken]
+      console.log(`🛑 Bot to'xtatildi: ${telegramToken}`.red.bold)
+    }
+  })
 }

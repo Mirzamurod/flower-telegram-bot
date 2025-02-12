@@ -25,6 +25,9 @@ export default function RootLayout({
   return (
     <SessionProvider>
       <html lang='en' suppressHydrationWarning>
+        <head>
+          <script src='https://telegram.org/js/telegram-web-app.js?56' />
+        </head>
         <body className={`${spaceGrotesk.variable} antialiased`} suppressHydrationWarning>
           <ThemeProvider
             attribute='class'
