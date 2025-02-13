@@ -13,14 +13,8 @@ const orderSchema = new Schema(
     ],
     flowers: [
       {
-        flowers: [
-          {
-            flowerId: { type: Schema.Types.ObjectId, ref: 'Flower', require: true },
-            qty: { type: Number, require: true },
-            price: { type: Number, require: true },
-          },
-        ],
-        count: { type: Number, require: true },
+        flowerId: { type: Schema.Types.ObjectId, ref: 'Flower', require: true },
+        qty: { type: Number, require: true },
         price: { type: Number, require: true },
       },
     ],

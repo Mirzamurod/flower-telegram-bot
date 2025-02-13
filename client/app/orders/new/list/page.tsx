@@ -1,16 +1,15 @@
 'use client'
 
-import { FC, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import Table from '@/components/table'
 import { TSortModel } from '@/types/table'
-import { TChild } from '@/types/child'
 import TableHeader from '../_components/list/TableHeader'
 import columns from '../_components/list/columns'
 import { useAppSelector } from '@/store'
 import { getFlowers } from '@/store/flowers'
 
-const OrdersNewList: FC<TChild> = () => {
+const OrdersNewList = () => {
   const dispatch = useDispatch()
   const [ordering, setOrdering] = useState<TSortModel | null>(null)
   const [search, setSearch] = useState<string>('')

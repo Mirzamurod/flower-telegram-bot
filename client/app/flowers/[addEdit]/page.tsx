@@ -47,7 +47,9 @@ const AddEditFlower = () => {
 
   useEffect(() => {
     if (flower) {
-      Object.entries(flower).map(([key, value]) => setValue(key as keyof TFlowerForm, value))
+      Object.entries(flower).map(([key, value]) =>
+        setValue(key as keyof TFlowerForm, value as string)
+      )
       setImage(flower.image)
     }
   }, [flower])

@@ -7,5 +7,5 @@ type SearchParams = { [key: string]: string | string[] | undefined }
 export type TChild = {
   params?: Params
   searchParams?: SearchParams
-  children: ReactNode
+  children?: ReactNode
 }

@@ -4,7 +4,7 @@ export type TBouquet = {
   _id: string
   image: string
   name?: string
-  price: number
+  price: number | string
   info?: string
   createdAt: string
   updatedAt: string

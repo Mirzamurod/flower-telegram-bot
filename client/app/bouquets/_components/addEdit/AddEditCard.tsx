@@ -17,7 +17,7 @@ const AddEditCard: FC<IProps> = props => {
   const { image, setImage } = props
   const { addEdit } = useParams()
 
-  const inputs: TInputType[] = [{ name: 'price', required: true }, { name: 'name' }]
+  const inputs: TInputType[] = [{ name: 'price', required: true, type: 'number' }, { name: 'name' }]
 
   return (
     <div>

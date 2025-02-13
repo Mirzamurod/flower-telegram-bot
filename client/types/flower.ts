@@ -4,7 +4,7 @@ export type TFlower = {
   _id: string
   image: string
   name: string
-  price: string
+  price: number | string
   createdAt: string
   updatedAt: string
   userId: string

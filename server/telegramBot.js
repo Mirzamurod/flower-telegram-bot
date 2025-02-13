@@ -4,7 +4,7 @@ import User from './models/userModel.js'
 const bots = {} // Xotirada botlarni saqlash
 
 // ✅ Bot yaratish va saqlash
-const createBot = async telegramToken => {
+const createBot = async (telegramToken, _id) => {
   if (bots[telegramToken]) {
     return bots[telegramToken] // Agar bot allaqachon mavjud bo‘lsa, qaytaramiz
   }
@@ -30,14 +30,16 @@ const createBot = async telegramToken => {
     if (msg.contact) {
       await bot.sendMessage(
         msg.chat.id,
-        `✅ Raqamingiz qabul qilindi: ${msg.contact.phone_number}. Buketlarni ko'rish knopkasini bosib buketlarni ko'rishingiz mumkin`,
+        `✅ Raqamingiz qabul qilindi: ${msg.contact.phone_number}. Buketlarni ko'rish knopkasini bosib buket va gullarni ko'rishingiz mumkin`,
         {
           reply_markup: {
             keyboard: [
               [
                 {
                   text: "Buketlarni ko'rish",
-                  web_app: { url: 'https://web-telegram-bot-rho.vercel.app' },
+                  web_app: {
+                    url: `https://4d06-213-230-116-47.ngrok-free.app/orders/${_id}`,
+                  },
                 },
               ],
             ],
@@ -45,6 +47,23 @@ const createBot = async telegramToken => {
           },
         }
       )
+    }
+
+    if (msg.web_app_data?.data) {
+      try {
+        const data = JSON.parse(msg.web_app_data?.data)
+
+        await bot.sendMessage(
+          chatId,
+          "Zakazingiz qabul qilindi, siz zakaz bergan buketlar ro'yxati:"
+        )
+
+        for (item of data) {
+          await bot.sendPhoto(chatId, item.image, { caption: `` })
+        }
+      } catch (error) {
+        console.log(error)
+      }
     }
   })
 
@@ -60,8 +79,8 @@ const createBot = async telegramToken => {
 // 🔄 **Server qayta ishga tushganda barcha botlarni tiklash**
 export const restoreBots = async () => {
   const tokens = await User.find({ role: 'client', telegramToken: { $exists: true } })
-  tokens.forEach(({ telegramToken }) => {
-    if (!bots[telegramToken]) createBot(telegramToken)
+  tokens.forEach(({ telegramToken, _id }) => {
+    if (!bots[telegramToken]) createBot(telegramToken, _id)
   })
 
   Object.keys(bots).forEach(telegramToken => {

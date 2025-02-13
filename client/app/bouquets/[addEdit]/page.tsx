@@ -47,7 +47,9 @@ const AddEditBouquet = () => {
 
   useEffect(() => {
     if (bouquet) {
-      Object.entries(bouquet).map(([key, value]) => setValue(key as keyof TBouquetForm, value))
+      Object.entries(bouquet).map(([key, value]) =>
+        setValue(key as keyof TBouquetForm, value as string)
+      )
       setImage(bouquet.image)
     }
   }, [bouquet])

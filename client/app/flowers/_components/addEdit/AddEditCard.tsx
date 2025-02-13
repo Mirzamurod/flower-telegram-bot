@@ -18,7 +18,7 @@ const AddEditCard: FC<IProps> = props => {
   const { addEdit } = useParams()
 
   const inputs: TInputType[] = [
-    { name: 'price', required: true },
+    { name: 'price', required: true, type: 'number' },
     { name: 'name', required: true },
   ]
 

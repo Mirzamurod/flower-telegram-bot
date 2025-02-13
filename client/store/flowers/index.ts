@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { flowerapi, flowersapi, flower } from '@/store/apis'
+import { flowerapi, flowersapi, flower, flowerpublic } from '@/store/apis'
 import { IFlowerStore, TFlowerForm } from '@/types/flower'
 
 const initialState: IFlowerStore = {
@@ -57,6 +57,16 @@ const flowers = createSlice({
 export const getFlowers = (params?: any) =>
   flower({
     url: flowersapi,
+    method: 'get',
+    params,
+    onStart: flowers.actions.onStartGetFlowers.type,
+    onSuccess: flowers.actions.onSuccessGetFlowers.type,
+    onFail: flowers.actions.onFailGetFlowers.type,
+  })
+
+export const getPublicFlowers = (id: string, params?: any) =>
+  flower({
+    url: flowerpublic + id,
     method: 'get',
     params,
     onStart: flowers.actions.onStartGetFlowers.type,
