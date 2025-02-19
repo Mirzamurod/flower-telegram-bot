@@ -1,7 +1,6 @@
 'use client'
 
 import { Fragment, useCallback, useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
 import Image from 'next/image'
 import { ModeToggle } from '@/components/shared/mode-toggle'
 import { Separator } from '@/components/ui/separator'
@@ -28,7 +27,6 @@ interface IFlower {
 }
 
 const Orders = () => {
-  const { userId } = useParams()
   const [bouquets, setBouquets] = useState<IBouquet[]>([])
   const [flowers, setFlowers] = useState<IFlower[]>([])
 
@@ -48,22 +46,6 @@ const Orders = () => {
     checkTelegramApi()
   }, [])
 
-  const onCheckout = () => {
-    console.log({ bouquets, flowers })
-    telegram.MainButton.text = 'Sotib olish'
-    telegram.MainButton.show()
-  }
-
-  const onSendData = useCallback(() => {
-    telegram.sendData(JSON.stringify({ bouquets, flowers }))
-  }, [bouquets])
-
-  useEffect(() => {
-    telegram.onEvent('mainButtonClicked', onSendData)
-
-    return () => telegram.offEvent('mainButtonClicked', onSendData)
-  }, [onSendData])
-
   const total = (items: IBouquet[] | IFlower[]): { totalUnit: number; totalSum: number } => {
     let totalUnit = 0
     let totalSum = 0
@@ -74,12 +56,31 @@ const Orders = () => {
     return { totalUnit, totalSum }
   }
 
+  const onCheckout = () => {
+    telegram.MainButton.text = 'Sotib olish'
+    telegram.MainButton.show()
+  }
+
+  const onSendData = useCallback(() => {
+    const data = {
+      bouquet: { bouquets, qty: total(bouquets).totalUnit, price: total(bouquets).totalSum },
+      flower: { flowers, qty: total(flowers).totalUnit, price: total(flowers).totalSum },
+    }
+    telegram.sendData(JSON.stringify(data))
+  }, [bouquets, flowers])
+
+  useEffect(() => {
+    telegram.onEvent('mainButtonClicked', onSendData)
+
+    return () => telegram.offEvent('mainButtonClicked', onSendData)
+  }, [onSendData])
+
   return (
     <div>
       {/* Sidebar */}
       <div className='sticky top-0 z-20 bg-background'>
         <div className='flex justify-between p-2'>
-          <h2 className='scroll-m-20 text-3xl font-semibold tracking-tight'>Flowers</h2>
+          <h2 className='scroll-m-20 text-3xl font-semibold tracking-tight'>Gullar</h2>
           <div className='flex gap-x-2'>
             <Popover>
               <PopoverTrigger asChild>
@@ -94,7 +95,7 @@ const Orders = () => {
                 {!bouquets.length && !flowers.length ? <h3>No data</h3> : null}
                 {bouquets.length ? (
                   <>
-                    <p>Bouquets</p>
+                    <p>Buketlar</p>
                     {bouquets.map(item => (
                       <Fragment key={item.bouquetId}>
                         <div className='flex justify-between items-center mt-2'>
@@ -105,7 +106,7 @@ const Orders = () => {
                       </Fragment>
                     ))}
                     <div className='flex justify-between items-center mt-2'>
-                      <p>Total:</p>
+                      <p>Umumiy:</p>
                       <p>{total(bouquets).totalUnit}</p>
                       <p>{getSum(total(bouquets).totalSum)}</p>
                     </div>
@@ -114,7 +115,7 @@ const Orders = () => {
                 ) : null}
                 {flowers.length ? (
                   <>
-                    <p>Custom bouquet</p>
+                    <p>Maxsus guldasta</p>
                     {flowers.map(item => (
                       <Fragment key={item.flowerId}>
                         <div className='flex justify-between items-center mt-2'>
@@ -125,18 +126,22 @@ const Orders = () => {
                       </Fragment>
                     ))}
                     <div className='flex justify-between items-center mt-2'>
-                      <p>Total:</p>
+                      <p>Umumiy:</p>
                       <p>{total(flowers).totalUnit}</p>
                       <p>{getSum(total(flowers).totalSum)}</p>
                     </div>
                   </>
                 ) : null}
-                <Separator className='my-2' />
-                <div className='flex justify-between items-center mt-2'>
-                  <p>Total:</p>
-                  <p>{total(bouquets).totalUnit + total(flowers).totalUnit}</p>
-                  <p>{getSum(total(bouquets).totalSum + total(flowers).totalSum)}</p>
-                </div>
+                {bouquets.length && flowers.length ? (
+                  <>
+                    <Separator className='my-2' />
+                    <div className='flex justify-between items-center mt-2'>
+                      <p>Umumiy:</p>
+                      <p>{total(bouquets).totalUnit + total(flowers).totalUnit}</p>
+                      <p>{getSum(total(bouquets).totalSum + total(flowers).totalSum)}</p>
+                    </div>
+                  </>
+                ) : null}
                 <Button
                   className='w-full mt-2'
                   disabled={!bouquets.length && !flowers.length}
@@ -154,8 +159,8 @@ const Orders = () => {
       {/* Tabs */}
       <Tabs defaultValue='bouquets' className='mt-4 container'>
         <TabsList>
-          <TabsTrigger value='bouquets'>Bouquets</TabsTrigger>
-          <TabsTrigger value='flowers'>Flowers</TabsTrigger>
+          <TabsTrigger value='bouquets'>Buketlar</TabsTrigger>
+          <TabsTrigger value='flowers'>Gullar</TabsTrigger>
         </TabsList>
         <TabsContent value='bouquets'>
           <Bouquets items={bouquets} setItems={setBouquets} />

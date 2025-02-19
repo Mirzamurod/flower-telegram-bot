@@ -1,6 +1,6 @@
 import expressAsyncHandler from 'express-async-handler'
 import { validationResult } from 'express-validator'
-import Flower from '../models/flowerModel.js'
+import flowerModel from '../models/flowerModel.js'
 
 const flower = {
   /**
@@ -9,14 +9,17 @@ const flower = {
    * @access  Private
    */
   getFlowers: expressAsyncHandler(async (req, res) => {
-    const { limit = 20, page = 1, sortName, sortValue } = req.query
+    const { limit = 20, page = 1, sortName, sortValue, search } = req.query
 
     const filter = { userId: req.user._id }
 
-    try {
-      const totalCount = await Flower.countDocuments(filter)
+    if (search) filter.name = { $regex: search ?? '', $options: 'i' }
 
-      const flowers = await Flower.find(filter)
+    try {
+      const totalCount = await flowerModel.countDocuments(filter)
+
+      const flowers = await flowerModel
+        .find(filter)
         .sort({ ...(sortValue ? { [sortName]: sortValue } : sortName), updatedAt: -1 })
         .limit(+limit)
         .skip(+limit * (+page - 1))
@@ -43,9 +46,10 @@ const flower = {
     const filter = { userId, block: false }
 
     try {
-      const totalCount = await Flower.countDocuments(filter)
+      const totalCount = await flowerModel.countDocuments(filter)
 
-      const flowers = await Flower.find(filter)
+      const flowers = await flowerModel
+        .find(filter)
         .limit(+limit)
         .skip(+limit * (+page - 1))
 
@@ -73,8 +77,8 @@ const flower = {
 
     try {
       const userId = req.user._id
-      await Flower.create({ ...req.body, userId })
-      res.status(201).json({ success: true, message: 'flower_added' })
+      await flowerModel.create({ ...req.body, userId })
+      res.status(201).json({ success: true, message: "Gul qo'shildi" })
     } catch (error) {
       res.status(400).json({ success: false, message: error.message })
     }
@@ -88,9 +92,9 @@ const flower = {
   getFlower: expressAsyncHandler(async (req, res) => {
     try {
       const flowerId = req.params.id
-      const flower = await Flower.findOne({ userId: req.user._id, _id: flowerId })
+      const flower = await flowerModel.findOne({ userId: req.user._id, _id: flowerId })
       if (flower) res.status(200).json({ data: flower })
-      else res.status(400).json({ success: false, message: 'flower_not_found' })
+      else res.status(400).json({ success: false, message: 'Gul topilmadi' })
     } catch (error) {
       res.status(200).json({ success: false, message: error.message })
     }
@@ -109,8 +113,8 @@ const flower = {
 
     try {
       const flowerId = req.params.id
-      await Flower.findByIdAndUpdate(flowerId, req.body)
-      res.status(200).json({ success: true, message: 'flower_edited' })
+      await flowerModel.findByIdAndUpdate(flowerId, req.body)
+      res.status(200).json({ success: true, message: "Gul o'zgartirildi" })
     } catch (error) {
       res.status(400).json({ success: false, message: error.message })
     }
@@ -124,8 +128,8 @@ const flower = {
   deleteFlower: expressAsyncHandler(async (req, res) => {
     try {
       const flowerId = req.params.id
-      await Flower.findByIdAndDelete(flowerId)
-      res.status(200).json({ success: true, message: 'flower_deleted' })
+      await flowerModel.findByIdAndDelete(flowerId)
+      res.status(200).json({ success: true, message: "Gul o'zgatirildi" })
     } catch (error) {
       res.status(400).json({ success: false, message: error.message })
     }
